@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -26,7 +26,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <stdlib.h>
+#include "shell.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +48,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+#define STACK_SIZE 1000
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,7 +60,32 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int pinout(int argc, char ** argv){
 
+	printf("PIN : fonction\r\n");
+
+	return 0;
+}
+
+int start(int argc, char ** argv){
+	printf("Power ON \r\n");
+
+	return 0;
+}
+
+int stop(int argc, char ** argv){
+	printf("Power OFF\r\n");
+
+	return 0;
+}
+
+void vTaskShell(void * p) {
+	shell_init();
+	shell_add('P', pinout, "*Pinout : Affichage des broches connect\351es* \r\n -->Commande : <P> \r\n -->Sortie : toutes les broches connect\351es et leur foncion. \r\n");
+		shell_add('G', start, "*Go - Start* \r\n -->Commande : <G> \r\n -->Sortie : allume l'\351tage de puissane du moteur.\r\n");
+		shell_add('S', stop, "*Stop* \r\n -->Commande : <S>\r\n -->Sortie : \351teind l'\351tage de puissance du moteur.\r\n");
+	shell_run();
+}
 /* USER CODE END 0 */
 
 /**
@@ -68,6 +95,8 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	BaseType_t xReturned;
+	TaskHandle_t xHandle = NULL;
 
   /* USER CODE END 1 */
 
@@ -94,6 +123,17 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 
+	xReturned = xTaskCreate(
+			vTaskShell,      	/* Function that implements the task. */
+			"Shell",         	/* Text name for the task. */
+			STACK_SIZE,      	/* Stack size in words, not bytes. */
+			( void * ) NULL,    /* Parameter passed into the task. */
+			1,					/* Priority at which the task is created. */
+			&xHandle );      	/* Used to pass out the created task's handle. */
+
+	if( xReturned == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
+		printf("Task Shell creation error: Could not allocate required memory\r\n");
+	}
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -104,12 +144,12 @@ int main(void)
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1)
+	{
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -178,11 +218,8 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -197,8 +234,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	/* User can add his own implementation to report the file name and line number,
+     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
