@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#define UART_DEVICE huart1
+#define UART_DEVICE huart2
 
 #define _SHELL_FUNC_LIST_MAX_SIZE 64
 
