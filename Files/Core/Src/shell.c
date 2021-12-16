@@ -1,8 +1,5 @@
 /*
  * shell.c
- *
- *  Created on: 7 juin 2019
- *      Author: Laurent Fiack
  */
 
 #include "shell.h"
@@ -28,7 +25,7 @@ static shell_func_t shell_func_list[_SHELL_FUNC_LIST_MAX_SIZE];
 static int dataReady = 0;
 
 int __io_putchar(int ch) {
-	HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+	HAL_UART_Transmit(&UART_DEVICE, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
 	return ch;
 }
 
@@ -59,9 +56,10 @@ int sh_help(int argc, char ** argv) {
 }
 
 void shell_init() {
-	printf("\r\n\r\n===== Monsieur Shell v0.2 =====\r\n");
+	printf("\r\n\r\n========== TP Commande MCC et asservissement ==========\r\n");
+	printf("Tapez 'H' pour obtenir la liste des fonctions disponibles\r\n");
 
-	shell_add('h', sh_help, help);
+	shell_add('H', sh_help, "*Affiche toutes les fontions disponibles du shell* \r\n");
 
 	for (int i = 0 ; i < 3 ; i++) {
 
@@ -109,14 +107,14 @@ int shell_exec(char c, char * buf) {
 
 static char buf[BUFFER_SIZE];
 static char backspace[] = "\b \b";
-static char prompt[] = "> ";
+static char prompt[] = "Guerin-Perret@Nucleo-G431>> ";
 
 int shell_run() {
 	int reading = 0;
 	int pos = 0;
 
 	while (1) {
-		  uart_write(prompt, 2);
+		  uart_write(prompt, 28);
 		  reading = 1;
 
 		  while(reading) {
