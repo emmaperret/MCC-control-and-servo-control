@@ -244,9 +244,11 @@ int pid(){
 	t_alpha=abs(512+(uint32_t)(send_speed[2]/1024*3000));
 	if(t_alpha>810){
 		TIM1->CCR1=810;
+		TIM1->CCR2=1024-810;
 		HAL_TIM_Base_Start_IT(&htim4);
 	}if(t_alpha<810){
 		TIM1->CCR1=t_alpha;
+		TIM1->CCR2=1024-t_alpha;
 		HAL_TIM_Base_Start_IT(&htim4);
 	}if(send_speed[2]==(float)aimed_speed){
 		printf("Target speed reached, motor is running at %lu \r\n",aimed_speed);
